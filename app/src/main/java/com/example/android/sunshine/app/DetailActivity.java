@@ -16,11 +16,17 @@
 
 package com.example.android.sunshine.app;
 
-import android.support.v7.app.ActionBarActivity;
+//import android.app.LoaderManager;
+
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +36,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.android.sunshine.app.data.WeatherContract;
 
 public class DetailActivity extends ActionBarActivity {
 
@@ -67,19 +75,24 @@ public class DetailActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class DetailFragment extends Fragment {
+    public static class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>  {
 
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
         private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+        private static final int URI_LOADER = 0;
         private String mForecastStr;
+        private String contentUri;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
         }
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,8 +102,12 @@ public class DetailActivity extends ActionBarActivity {
 
             // The detail Activity called via intent.  Inspect the intent for forecast data.
             Intent intent = getActivity().getIntent();
-            if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mForecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+            if (intent != null) {
+                contentUri = intent.getDataString();
+
+                getLoaderManager().initLoader(URI_LOADER, null, this);
+                //mForecastStr =
             }
 
             if (null != mForecastStr) {
@@ -130,5 +147,53 @@ public class DetailActivity extends ActionBarActivity {
                     mForecastStr + FORECAST_SHARE_HASHTAG);
             return shareIntent;
         }
+
+        @Override
+        public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            switch (id){
+
+                case URI_LOADER:
+                    return new CursorLoader(getActivity(),
+                        Uri.parse(contentUri),
+                        null,
+                        null,
+                        null,
+                        null);
+                default: return null;
+            }
+
+        }
+
+        @Override
+        public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+
+            String[] columns = data.getColumnNames();
+            TextView textView = ((TextView) getView().findViewById(R.id.detail_text));
+            for(String element : columns){
+                textView.append(element+"\n");
+            }
+
+            data.moveToFirst();
+
+            textView.append("\nDate: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE)));
+            textView.append("\nOutlook: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC)));
+            textView.append("\nHigh/Low: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP))
+                +"/"+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)));
+            textView.append("\nHumidity: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY)));
+
+            //TODO Continue displaying this (perhaps implement a Projection and use a loop instead of hardcoding as above
+
+//            //mForecastStr=data.toString();
+//            ((TextView) getView().findViewById(R.id.detail_text))
+//                    .setText(mForecastStr);
+            //TODO Parse the data out into display
+        }
+
+        @Override
+        public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+
+        }
+
+
     }
 }
