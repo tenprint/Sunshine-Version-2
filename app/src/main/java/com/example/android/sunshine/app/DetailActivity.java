@@ -187,6 +187,8 @@ public class DetailActivity extends ActionBarActivity {
 //            ((TextView) getView().findViewById(R.id.detail_text))
 //                    .setText(mForecastStr);
             //TODO Parse the data out into display
+
+            //TEST COMMENT -- TESTING GIT
         }
 
         @Override
