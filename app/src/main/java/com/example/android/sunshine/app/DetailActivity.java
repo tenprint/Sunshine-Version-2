@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+
 import com.example.android.sunshine.app.data.WeatherContract;
 
 public class DetailActivity extends ActionBarActivity {
@@ -88,6 +89,17 @@ public class DetailActivity extends ActionBarActivity {
         private static final int URI_LOADER = 0;
         private String mForecastStr;
         private String contentUri;
+        private String[] weatherDetailFields = {
+                WeatherContract.LocationEntry.COLUMN_CITY_NAME,
+                WeatherContract.WeatherEntry.COLUMN_DATE,
+                WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
+                WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
+                WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+                WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+                WeatherContract.WeatherEntry.COLUMN_PRESSURE,
+                WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+                WeatherContract.WeatherEntry.COLUMN_DEGREES
+        };
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -155,7 +167,7 @@ public class DetailActivity extends ActionBarActivity {
                 case URI_LOADER:
                     return new CursorLoader(getActivity(),
                         Uri.parse(contentUri),
-                        null,
+                        weatherDetailFields,
                         null,
                         null,
                         null);
@@ -169,26 +181,28 @@ public class DetailActivity extends ActionBarActivity {
 
             String[] columns = data.getColumnNames();
             TextView textView = ((TextView) getView().findViewById(R.id.detail_text));
-            for(String element : columns){
-                textView.append(element+"\n");
-            }
-
+//            for(String element : columns){
+//                textView.append(element+": "+ data.getString(columns) + "\n");
+//            }
+//
             data.moveToFirst();
 
-            textView.append("\nDate: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE)));
-            textView.append("\nOutlook: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC)));
-            textView.append("\nHigh/Low: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP))
-                +"/"+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)));
-            textView.append("\nHumidity: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY)));
+            for(int i=0; i<columns.length; i++){
+                textView.append(columns[i] + ": "+data.getString(i) + "\n");
+            }
 
-            //TODO Continue displaying this (perhaps implement a Projection and use a loop instead of hardcoding as above
 
-//            //mForecastStr=data.toString();
-//            ((TextView) getView().findViewById(R.id.detail_text))
-//                    .setText(mForecastStr);
-            //TODO Parse the data out into display
+            //This works but it's hard coded, let's try with a Projection
+//            textView.append("\nCity Name: " + data.getString(data.getColumnIndex(WeatherContract.LocationEntry.COLUMN_CITY_NAME)));
+//            textView.append("\nDate: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE)));
+//            textView.append("\nOutlook: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC)));
+//            textView.append("\nHigh/Low: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP))
+//                +"/"+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)));
+//            textView.append("\nHumidity: "+data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY)));
+            //Pressure
+            //Wind
+            //Degrees
 
-            //TEST COMMENT -- TESTING GIT
         }
 
         @Override
