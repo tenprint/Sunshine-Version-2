@@ -179,17 +179,33 @@ public class DetailActivity extends ActionBarActivity {
         @Override
         public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
 
-            String[] columns = data.getColumnNames();
-            TextView textView = ((TextView) getView().findViewById(R.id.detail_text));
-//            for(String element : columns){
-//                textView.append(element+": "+ data.getString(columns) + "\n");
-//            }
-//
-            data.moveToFirst();
+            /*
+             *   This version uses a Projection to get only needed fields in the query
+             *  -if statement handles a blank cursor
+             *  -uses StringBuilder class to append cursor data as it's iterated
+             *  -pushes data to mForecast string which does two things:
+             *       #1 Populates TextView
+             *       #2 Makes data available for Sharing
+             */
+            
+            String[] columns = data.getColumnNames();  //Put column names from query into an array
+            TextView textView = ((TextView) getView().findViewById(R.id.detail_text)); //Reference to TextView
+            StringBuilder stringBuilder = new StringBuilder(); //Class used to append Cursor data to String
 
-            for(int i=0; i<columns.length; i++){
-                textView.append(columns[i] + ": "+data.getString(i) + "\n");
-            }
+            if(data.moveToFirst()) { //if statement handles cursor without data
+
+                //Iterate through cursor.  Display column name + column data
+                for (int i = 0; i < columns.length; i++) {
+//                textView.append(columns[i] + ": "+data.getString(i) + "\n");
+                    stringBuilder.append(columns[i] + ": " + data.getString(i) + "\n");
+                }
+
+                //Update mForecastStr. It is used for Sharing
+                mForecastStr = stringBuilder.toString();
+
+                //Update TextView
+                textView.setText(mForecastStr);
+            } else textView.setText("NO DATA"); //Default message to display in case of no data from cursor
 
 
             //This works but it's hard coded, let's try with a Projection
