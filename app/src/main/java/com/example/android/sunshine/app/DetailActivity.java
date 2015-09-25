@@ -187,7 +187,7 @@ public class DetailActivity extends ActionBarActivity {
              *       #1 Populates TextView
              *       #2 Makes data available for Sharing
              */
-            
+
             String[] columns = data.getColumnNames();  //Put column names from query into an array
             TextView textView = ((TextView) getView().findViewById(R.id.detail_text)); //Reference to TextView
             StringBuilder stringBuilder = new StringBuilder(); //Class used to append Cursor data to String

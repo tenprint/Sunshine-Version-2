@@ -16,8 +16,10 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -26,18 +28,52 @@ import android.view.MenuItem;
 public class MainActivity extends ActionBarActivity {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final String FORECASTFRAGMENT_TAG="FORECASTFRAGMENT";
+    String mLocation; //Stores current known location
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get location stored in Settings and assign to mLocation
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mLocation = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        Log.d(LOG_TAG,"mLocation = "+mLocation);
+
+
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ForecastFragment())
+                    .add(R.id.container, new ForecastFragment(),FORECASTFRAGMENT_TAG)
                     .commit();
         }
     }
 
+    public void onResume(){
+        super.onResume();
+        Log.d(LOG_TAG, "onResume()");
+
+        String preferredLocation = Utility.getPreferredLocation(this);
+        Log.d(LOG_TAG, "preferredLocation = " + preferredLocation);
+
+        if(!mLocation.equals(preferredLocation)){
+
+            Log.d(LOG_TAG, "mLocation has been updated");
+
+            ForecastFragment ff = (ForecastFragment) getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ff.onLocationChanged();
+            mLocation=preferredLocation;
+            Log.d(LOG_TAG, "mLocation updated to " + mLocation);
+
+
+        } else {
+
+            Log.d(LOG_TAG, "mLocation hasn't changed");
+
+        }
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
