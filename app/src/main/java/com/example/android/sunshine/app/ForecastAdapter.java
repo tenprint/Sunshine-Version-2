@@ -99,15 +99,8 @@ public class ForecastAdapter extends CursorAdapter {
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
 
         // Use placeholder image for now
-        // Don't need this anymore ImageView iconView = (ImageView) view.findViewById(R.id.list_item_icon);
         viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
 
-        //We don't need this anymore
-        //Get references to TextViews
-//        TextView date = (TextView) view.findViewById(R.id.list_item_date_textview);
-//        TextView forecast = (TextView) view.findViewById(R.id.list_item_forecast_textview);
-//        TextView highView = (TextView) view.findViewById(R.id.list_item_high_textview);
-//        TextView lowView = (TextView) view.findViewById(R.id.list_item_low_textview);
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);
@@ -116,7 +109,6 @@ public class ForecastAdapter extends CursorAdapter {
         double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
         double low = cursor.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
 
-        //TextView highView = (TextView) view.findViewById(R.id.list_item_high_textview);
         viewHolder.highView.setText(Utility.formatTemperature(context, high, isMetric));
         viewHolder.lowView.setText(Utility.formatTemperature(context, low, isMetric));
 

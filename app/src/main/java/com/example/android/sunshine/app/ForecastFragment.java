@@ -153,12 +153,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
     }
 
-    //Deleted as per Lesson 4C Handle the Settings Change
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        updateWeather();
-//    }
 
 
 
