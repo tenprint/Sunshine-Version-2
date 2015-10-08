@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback{
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private final String FORECASTFRAGMENT_TAG = "FFTAG";
@@ -63,10 +63,8 @@ public class MainActivity extends ActionBarActivity {
             mTwoPane = false;
         }
 
-
 //      DEBUG -- What is mTwoPane?
 //      Log.d(LOG_TAG,"mTwoPane = "+mTwoPane);
-
     }
 
     @Override
@@ -128,5 +126,23 @@ public class MainActivity extends ActionBarActivity {
             }
             mLocation = location;
         }
+    }
+
+    //ForecastFragment Callback
+    @Override
+    public void onItemSelected(Uri dateUri) {
+
+
+        Log.d(LOG_TAG, "mTwoPane = "+ mTwoPane + " URI = " + dateUri.toString());
+
+        /*
+        if(mTwoPane){
+
+        }
+        else {
+            Log.d(LOG_TAG, "mTwoPane TRUE" + dateUri.toString());
+
+        }*/
+
     }
 }
