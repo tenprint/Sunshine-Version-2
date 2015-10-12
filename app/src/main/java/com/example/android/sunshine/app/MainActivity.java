@@ -63,8 +63,8 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             mTwoPane = false;
         }
 
-//      DEBUG -- What is mTwoPane?
-//      Log.d(LOG_TAG,"mTwoPane = "+mTwoPane);
+     // DEBUG -- What is mTwoPane?
+      Log.d(LOG_TAG,"mTwoPane = "+mTwoPane);
     }
 
     @Override

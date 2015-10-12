@@ -125,16 +125,16 @@ public class Utility {
     }
 
     // Format used for storing dates in the database.  ALso used for converting those strings
-    // back into date objects for comparison/processing.
+    // back into mDate objects for comparison/processing.
     public static final String DATE_FORMAT = "yyyyMMdd";
 
     /**
-     * Helper method to convert the database representation of the date into something to display
+     * Helper method to convert the database representation of the mDate into something to display
      * to users.  As classy and polished a user experience as "20140102" is, we can do better.
      *
      * @param context Context to use for resource localization
-     * @param dateInMillis The date in milliseconds
-     * @return a user-friendly representation of the date.
+     * @param dateInMillis The mDate in milliseconds
+     * @return a user-friendly representation of the mDate.
      */
     public static String getFriendlyDayString(Context context, long dateInMillis) {
         // The day string for forecast uses the following logic:
@@ -149,7 +149,7 @@ public class Utility {
         int julianDay = Time.getJulianDay(dateInMillis, time.gmtoff);
         int currentJulianDay = Time.getJulianDay(currentTime, time.gmtoff);
 
-        // If the date we're building the String for is today's date, the format
+        // If the mDate we're building the String for is today's mDate, the format
         // is "Today, June 24"
         if (julianDay == currentJulianDay) {
             String today = context.getString(R.string.today);
@@ -159,7 +159,7 @@ public class Utility {
                     today,
                     getFormattedMonthDay(context, dateInMillis)));
         } else if ( julianDay < currentJulianDay + 7 ) {
-            // If the input date is less than a week in the future, just return the day name.
+            // If the input mDate is less than a week in the future, just return the day name.
             return getDayName(context, dateInMillis);
         } else {
             // Otherwise, use the form "Mon Jun 3"
@@ -173,11 +173,11 @@ public class Utility {
      * E.g "today", "tomorrow", "wednesday".
      *
      * @param context Context to use for resource localization
-     * @param dateInMillis The date in milliseconds
+     * @param dateInMillis The mDate in milliseconds
      * @return
      */
     public static String getDayName(Context context, long dateInMillis) {
-        // If the date is today, return the localized version of "Today" instead of the actual
+        // If the mDate is today, return the localized version of "Today" instead of the actual
         // day name.
 
         Time t = new Time();
@@ -198,9 +198,9 @@ public class Utility {
     }
 
     /**
-     * Converts db date format to the format "Month day", e.g "June 24".
+     * Converts db mDate format to the format "Month day", e.g "June 24".
      * @param context Context to use for resource localization
-     * @param dateInMillis The db formatted date string, expected to be of the form specified
+     * @param dateInMillis The db formatted mDate string, expected to be of the form specified
      *                in Utility.DATE_FORMAT
      * @return The day in the form of a string formatted "December 6"
      */
