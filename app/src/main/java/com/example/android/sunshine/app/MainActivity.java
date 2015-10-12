@@ -15,6 +15,8 @@
  */
 package com.example.android.sunshine.app;
 
+
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.android.sunshine.app.data.WeatherContract;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback{
 
@@ -64,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         }
 
      // DEBUG -- What is mTwoPane?
-      Log.d(LOG_TAG,"mTwoPane = "+mTwoPane);
+     // Log.d(LOG_TAG,"mTwoPane = "+mTwoPane);
     }
 
     @Override
@@ -119,30 +123,43 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         super.onResume();
         String location = Utility.getPreferredLocation( this );
         // update the location in our second pane using the fragment manager
-        if (location != null && !location.equals(mLocation)) {
+        if (location != null && !location.equals(mLocation)){
             ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_forecast);
-            if ( null != ff ) {
-                ff.onLocationChanged();
-            }
-            mLocation = location;
+        if ( null != ff ) {
+            ff.onLocationChanged();
         }
+        DetailFragment df = (DetailFragment)getSupportFragmentManager().findFragmentByTag(DETAILFRAGMENT_TAG);
+        if ( null != df ) {
+            df.onLocationChanged(location);
+        }
+        mLocation = location;
     }
+}
 
     //ForecastFragment Callback
     @Override
-    public void onItemSelected(Uri dateUri) {
+    public void onItemSelected(Uri contentUri) {
+
+        //DEBUG -- Check mTwoPane value and view Uri passed in
+        //Log.d(LOG_TAG, "mTwoPane = "+ mTwoPane + " URI = " + uri.toString());
 
 
-        Log.d(LOG_TAG, "mTwoPane = "+ mTwoPane + " URI = " + dateUri.toString());
-
-        /*
         if(mTwoPane){
 
-        }
-        else {
-            Log.d(LOG_TAG, "mTwoPane TRUE" + dateUri.toString());
+            Bundle args = new Bundle();
+            args.putParcelable(DetailFragment.DETAIL_URI, contentUri);
 
-        }*/
+            DetailFragment fragment = new DetailFragment();
+            fragment.setArguments(args);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.weather_detail_container, fragment, DETAILFRAGMENT_TAG)
+                    .commit();
+
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class).setData(contentUri);
+            startActivity(intent);
+        }
 
     }
 }

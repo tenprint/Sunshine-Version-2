@@ -126,9 +126,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
-                    String entryDate = cursor.getString(cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE));
+                    long entryDate = cursor.getLong(cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE));
 
-                    Uri uri = Uri.parse(entryDate);
+                    Uri uri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+                            locationSetting, entryDate);
 
                     mCallback.onItemSelected(uri);
 
