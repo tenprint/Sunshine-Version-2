@@ -79,7 +79,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     Callback mCallback;
 
     static final String STATE_LISTITEMPOSITION = "listItemPosition";
-    int mPosition=-1; // Initialize as a negative, once it is assigned a value, there will only be positive numbers
+    int mPosition=ListView.INVALID_POSITION;
     ListView mListView;
 
 
@@ -92,8 +92,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
 
-        //Get any saved position data
-        if(savedInstanceState!=null){
+        // If savedInstanceState has STATE_LISTITEMPOSITION data, get saved position data
+        if(savedInstanceState!=null && savedInstanceState.containsKey(STATE_LISTITEMPOSITION)){
             mPosition = savedInstanceState.getInt(STATE_LISTITEMPOSITION);
         }
 
@@ -219,9 +219,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mForecastAdapter.swapCursor(cursor);
 
-        // If mPosition has been assigned a value greater than -1, i.e. the activity has been destroyed at least once,
+        // If mPosition has been assigned a value, i.e. the activity has been destroyed at least once,
         // scroll to the selected item.
-        if(mPosition>-1) {
+        if(mPosition != ListView.INVALID_POSITION) {
             Log.d(LOG_TAG, "Calling smoothScrollToPosition()");
             mListView.smoothScrollToPosition(mPosition);
         }
