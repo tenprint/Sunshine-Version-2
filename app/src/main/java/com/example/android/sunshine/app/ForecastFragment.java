@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,7 @@ import com.example.android.sunshine.app.data.WeatherContract;
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    static final String LOG_TAG = "ForecastFragment";
     private static final int FORECAST_LOADER = 0;
     // For the forecast view we're showing only a small subset of the stored data.
     // Specify the columns we need.
@@ -76,6 +78,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     Callback mCallback;
 
+    static final String STATE_LISTITEMPOSITION = "listItemPosition";
+    int mPosition=-1; // Initialize as a negative, once it is assigned a value, there will only be positive numbers
+    ListView mListView;
+
+
     public ForecastFragment() {
     }
 
@@ -84,6 +91,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+
+        //Get any saved position data
+        if(savedInstanceState!=null){
+            mPosition = savedInstanceState.getInt(STATE_LISTITEMPOSITION);
+        }
+
+        //DEBUG -- Check STATE_LISTITEMPPOSITION data
+        Log.d(LOG_TAG, "STATE_LISTITEMPOSITION = " + mPosition);
+
     }
 
     @Override
@@ -104,45 +120,49 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt(STATE_LISTITEMPOSITION, mPosition);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
+
         // The CursorAdapter will take data from our cursor and populate the ListView.
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_forecast);
-        listView.setAdapter(mForecastAdapter);
+        mListView = (ListView) rootView.findViewById(R.id.listview_forecast);
+        mListView.setAdapter(mForecastAdapter);
 
         // We'll call our MainActivity
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                // When a list item is clicked, store it's position in case the activity gets destroyed
+                mPosition = position;
+
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
                     long entryDate = cursor.getLong(cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DATE));
-
                     Uri uri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
                             locationSetting, entryDate);
-
                     mCallback.onItemSelected(uri);
-
-                    //Original code
-//                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-//                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-//                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-//                            ));
-//                    startActivity(intent);
-
                 }
             }
         });
+
         return rootView;
     }
 
@@ -198,6 +218,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mForecastAdapter.swapCursor(cursor);
+
+        // If mPosition has been assigned a value greater than -1, i.e. the activity has been destroyed at least once,
+        // scroll to the selected item.
+        if(mPosition>-1) {
+            Log.d(LOG_TAG, "Calling smoothScrollToPosition()");
+            mListView.smoothScrollToPosition(mPosition);
+        }
     }
 
     @Override
