@@ -17,6 +17,7 @@ import com.example.android.sunshine.app.data.WeatherContract;
  */
 public class ForecastAdapter extends CursorAdapter {
 
+    boolean mUseTodayLayout;
     private static final int VIEW_TYPE_COUNT = 2;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;
@@ -107,9 +108,12 @@ public class ForecastAdapter extends CursorAdapter {
         viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
     }
 
+    public void setUseTodayLayout(boolean useTodayLayout){
+        mUseTodayLayout = useTodayLayout;
+    }
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
+        return (position == 0 && mUseTodayLayout) ? VIEW_TYPE_TODAY : VIEW_TYPE_FUTURE_DAY;
     }
 
     @Override
