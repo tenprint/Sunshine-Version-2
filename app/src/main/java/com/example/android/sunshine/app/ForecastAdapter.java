@@ -17,7 +17,7 @@ import com.example.android.sunshine.app.data.WeatherContract;
  */
 public class ForecastAdapter extends CursorAdapter {
 
-    boolean mUseTodayLayout;
+    private boolean mUseTodayLayout;
     private static final int VIEW_TYPE_COUNT = 2;
     private static final int VIEW_TYPE_TODAY = 0;
     private static final int VIEW_TYPE_FUTURE_DAY = 1;

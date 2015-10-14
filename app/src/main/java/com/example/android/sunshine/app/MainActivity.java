@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             // (res/layout-sw600dp). If this view is present, then the activity should be
             // in two-pane mode.
             mTwoPane = true;
-            forecastFragment.mForecastAdapter.setUseTodayLayout(false);
+            forecastFragment.setUseTodayLayout(false);
 
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
             }
         } else { //Otherwise, it will be Single Pane.  Set flag to false and use "TodayLayout"
             mTwoPane = false;
-            forecastFragment.mForecastAdapter.setUseTodayLayout(true);
+            forecastFragment.setUseTodayLayout(true);
         }
 
 
