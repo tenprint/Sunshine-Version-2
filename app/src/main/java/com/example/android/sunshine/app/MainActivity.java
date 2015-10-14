@@ -50,11 +50,16 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 //        Log.d(LOG_TAG, "display size = " + size.toString());
 
 
+
+        ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_forecast);
+
         if (findViewById(R.id.weather_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
             // (res/layout-sw600dp). If this view is present, then the activity should be
             // in two-pane mode.
             mTwoPane = true;
+            forecastFragment.mForecastAdapter.setUseTodayLayout(false);
 
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
@@ -65,13 +70,10 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
                         .commit();
 
             }
-        } else {
+        } else { //Otherwise, it will be Single Pane.  Set flag to false and use "TodayLayout"
             mTwoPane = false;
+            forecastFragment.mForecastAdapter.setUseTodayLayout(true);
         }
-
-        ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_forecast);
-
 
 
      // DEBUG -- What is mTwoPane?
