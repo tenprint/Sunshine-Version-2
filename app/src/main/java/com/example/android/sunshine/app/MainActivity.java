@@ -16,7 +16,6 @@
 package com.example.android.sunshine.app;
 
 
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +23,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.example.android.sunshine.app.data.WeatherContract;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback{
 
@@ -73,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         } else { //Otherwise, it will be Single Pane.  Set flag to false and use "TodayLayout"
             mTwoPane = false;
             forecastFragment.setUseTodayLayout(true);
+            getSupportActionBar().setElevation(0f);
         }
 
 

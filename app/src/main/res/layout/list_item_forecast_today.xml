@@ -6,7 +6,6 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:padding="16dp"
     android:background="@drawable/touch_selector">
 
     <LinearLayout
@@ -14,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
+        android:paddingLeft="60dp"
         android:gravity="center_horizontal">
 
         <TextView
