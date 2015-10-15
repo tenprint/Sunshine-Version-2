@@ -75,20 +75,23 @@ public class ForecastAdapter extends CursorAdapter {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         int viewType = getItemViewType(cursor.getPosition());
+        int conditionID = cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
         switch (viewType) {
             case VIEW_TYPE_TODAY: {
                 // Get weather icon
-                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
-                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(conditionID));
                 break;
             }
             case VIEW_TYPE_FUTURE_DAY: {
                 // Get weather icon
-                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
-                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
+                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(conditionID));
                 break;
             }
         }
+        // Lesson 5.19 -- add accessibility function --
+        // I've added a method to the Utility class to add contentDescription based on COL_WEATHER_CONDITION_ID
+        viewHolder.iconView.setContentDescription(Utility.getContentDescription(conditionID));
+
 
         // Read date from cursor
         long dateInMillis = cursor.getLong(ForecastFragment.COL_WEATHER_DATE);
