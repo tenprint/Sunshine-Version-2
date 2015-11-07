@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * Created by jlipata on 10/15/15.
@@ -16,7 +15,7 @@ public class MyView extends View {
 
     int mCenterX;
     int mCenterY;
-    String mDirection;
+    float mDirection;
 
 
     public MyView(Context context){
@@ -53,10 +52,10 @@ public class MyView extends View {
 //        int compassFaceRadius;
 //        if (w<h) compassFaceRadius = w; else compassFaceRadius = h;
 
-        mCenterX = w/2;
-        mCenterY = h/2;
+        mCenterX = w / 2;
+        mCenterY = h / 2;
 
-        double needleLengthOffset = 0.65; // What percentage the needle size should compared to the compass face
+        double needleLengthOffset = 0.70; // What percentage the needle size should compared to the compass face
         double needleLength = compassFaceRadius * needleLengthOffset;
         int boarder = 15;
 
@@ -66,43 +65,23 @@ public class MyView extends View {
 
         // Draw boarder
         paint.setColor(getResources().getColor(R.color.sunshine_dark_blue));
-        canvas.drawCircle(mCenterX, mCenterY, compassFaceRadius+boarder, paint);
+        canvas.drawCircle(mCenterX, mCenterY, compassFaceRadius + boarder, paint);
 
         // Draw inner compass face
         paint.setColor(Color.WHITE);
         canvas.drawCircle(mCenterX, mCenterY, compassFaceRadius, paint);
 
         // Draw Needle
-        double xOffset = 0;
-        double yOffset = 0;
-
-        // Determine end-point of needle based on direction param
-        if(mDirection!=null) {
-
-            if (mDirection.contains("N")) {
-                yOffset = -needleLength;
-            }
-            if (mDirection.contains("E")) {
-                xOffset = needleLength;
-            }
-            if (mDirection.contains("S")) {
-                yOffset = needleLength;
-            }
-            if (mDirection.contains("W")) {
-                xOffset = -needleLength;
-            }
-
-            Log.d("MyView Offset", Double.toString(xOffset) + ", " + Double.toString(yOffset));
-
-            paint.setColor(Color.BLACK);
-            paint.setStrokeWidth(10);
-            canvas.drawLine(mCenterX, mCenterY, mCenterX + (float) xOffset, mCenterY + (float) yOffset, paint);
-        } else Toast.makeText(getContext(), "Compass: No direction data", Toast.LENGTH_SHORT);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(10);
+        canvas.drawLine(mCenterX, mCenterY, (float) (w / 2 + needleLength * Math.sin(Math.toRadians(mDirection))),
+                (float) (h / 2 - needleLength * Math.cos(Math.toRadians(mDirection))), paint);
     }
 
-    protected void initialize(String direction){
+
+    protected void initialize(float direction){
         mDirection = direction;
-        Log.d("MyView", direction);
+        Log.d("MyView", Float.toString(direction));
         invalidate();
     }
 }

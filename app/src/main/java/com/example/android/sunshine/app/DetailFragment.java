@@ -221,7 +221,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String formattedWind = Utility.getFormattedWind(getActivity(), windSpeedStr, windDirStr);
 
             mWindView.setText(formattedWind);
-            mCompass.initialize(formattedWind);
+            mCompass.initialize(windDirStr);
 
             // Read pressure from cursor and update view
             float pressure = data.getFloat(COL_WEATHER_PRESSURE);
