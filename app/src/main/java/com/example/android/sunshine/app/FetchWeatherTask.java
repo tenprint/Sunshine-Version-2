@@ -332,7 +332,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, Void> {
                     Toast.makeText(mContext, "Check your internet connection", Toast.LENGTH_SHORT).show();
                 }
             });
-            
+
             // If the code didn't successfully get the weather data, there's no point in attempting
             // to parse it.
         } catch (JSONException e) {

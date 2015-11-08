@@ -11,33 +11,33 @@ import android.view.View;
 /**
  * Created by jlipata on 10/15/15.
  */
-public class MyView extends View {
+public class CustomCompassView extends View {
 
     int mCenterX;
     int mCenterY;
     float mDirection;
 
 
-    public MyView(Context context){
+    public CustomCompassView(Context context){
         super(context);
     }
 
-    public MyView(Context context, AttributeSet attrs){
+    public CustomCompassView(Context context, AttributeSet attrs){
         super(context, attrs);
     }
 
 
-    public MyView(Context context, AttributeSet attrs, int defaultStyle){
+    public CustomCompassView(Context context, AttributeSet attrs, int defaultStyle){
         super(context, attrs, defaultStyle);
     }
 
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(
-                MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
-    }
+//
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        setMeasuredDimension(
+//                MeasureSpec.getSize(widthMeasureSpec),
+//                MeasureSpec.getSize(heightMeasureSpec));
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -83,5 +83,6 @@ public class MyView extends View {
         mDirection = direction;
         Log.d("MyView", Float.toString(direction));
         invalidate();
+        requestLayout();
     }
 }
