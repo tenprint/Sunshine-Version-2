@@ -10,7 +10,21 @@ import android.view.View;
 
 /**
  * Created by jlipata on 10/15/15.
+ *
+ * Custom Compass View
+ *
+ * Needle will point to cardinal direction as provided via `direction` param in
+ * initialize() method.
+ *
+ * initialize() must be called to display the needle correctly
+ *
+ * This will scale according to the layout_width and layout_height specified in
+ * the layout XML
+ *
+ * TODO: Add shadows to conform to material design patterns
+ *
  */
+
 public class CustomCompassView extends View {
 
     int mCenterX;
@@ -31,33 +45,26 @@ public class CustomCompassView extends View {
         super(context, attrs, defaultStyle);
     }
 
-//
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        setMeasuredDimension(
-//                MeasureSpec.getSize(widthMeasureSpec),
-//                MeasureSpec.getSize(heightMeasureSpec));
-//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // Hard coding these for the time being. TODO: Replace these with layout size from the framework
-        int w = 200;
-        int h = 200;
-        int compassFaceRadius = 80;
+        // Get canvas size specified in layout
+        int wCanvas = getWidth();
+        int hCanvas = getHeight();
 
-//        // Initialize compass face size according to size provided by layout
-//        int compassFaceRadius;
-//        if (w<h) compassFaceRadius = w; else compassFaceRadius = h;
+        // Initialize compass face size according to size provided by layout
+        // Radius is calculated as a fraction of the smallest canvas side
+        int compassFaceRadius;
+        if (wCanvas<hCanvas)  compassFaceRadius = (int) (wCanvas/2.4); else compassFaceRadius = (int) (hCanvas/2.4);
 
-        mCenterX = w / 2;
-        mCenterY = h / 2;
+        mCenterX = wCanvas / 2;
+        mCenterY = hCanvas / 2;
 
-        double needleLengthOffset = 0.70; // What percentage the needle size should compared to the compass face
+        double needleLengthOffset = 0.80; // How long the needle should be compared to the compass face, as a percentage
         double needleLength = compassFaceRadius * needleLengthOffset;
-        int boarder = 15;
+        int boarder = (int) (compassFaceRadius * .10);
 
         // Initialize Paint object
         Paint paint = new Paint();
@@ -73,9 +80,17 @@ public class CustomCompassView extends View {
 
         // Draw Needle
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(10);
-        canvas.drawLine(mCenterX, mCenterY, (float) (w / 2 + needleLength * Math.sin(Math.toRadians(mDirection))),
-                (float) (h / 2 - needleLength * Math.cos(Math.toRadians(mDirection))), paint);
+        paint.setStrokeWidth( (int) (compassFaceRadius*0.08) );
+        canvas.drawLine(mCenterX, mCenterY, (float) (wCanvas / 2 + needleLength * Math.sin(Math.toRadians(mDirection))),
+                (float) (hCanvas / 2 - needleLength * Math.cos(Math.toRadians(mDirection))), paint);
+
+//        // For debugging -- draw boarder around View boundaries
+//        canvas.drawLine(0,0, getWidth(), 0, paint);
+//        canvas.drawLine(0,0, 0, getHeight(), paint);
+//        canvas.drawLine(0, getHeight(), getWidth(), getHeight(), paint);
+//        canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), paint);
+
+
     }
 
 
