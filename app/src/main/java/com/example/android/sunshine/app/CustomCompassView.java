@@ -16,7 +16,8 @@ import android.view.View;
  * Needle will point to cardinal direction as provided via `direction` param in
  * initialize() method.
  *
- * initialize() must be called to display the needle correctly
+ * initialize() must be called to display the needle correctly.  This will also update
+ * Accessibility/content description.
  *
  * This will scale according to the layout_width and layout_height specified in
  * the layout XML
@@ -46,9 +47,12 @@ public class CustomCompassView extends View {
     }
 
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        // TODO Need to get padding and include in calculations
 
         // Get canvas size specified in layout
         int wCanvas = getWidth();
@@ -90,13 +94,24 @@ public class CustomCompassView extends View {
 //        canvas.drawLine(0, getHeight(), getWidth(), getHeight(), paint);
 //        canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), paint);
 
-
     }
 
 
     protected void initialize(float direction){
         mDirection = direction;
         Log.d("MyView", Float.toString(direction));
+
+//        // Udacity code that I need to research further
+//        AccessibilityManager accessibilityManager =
+//                (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        if (accessibilityManager.isEnabled()) {
+//            sendAccessibilityEvent(
+//                    AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED);
+//        }
+
+        // Accessibility
+        this.setContentDescription("Compass direction " + direction + "degrees");
+
         invalidate();
         requestLayout();
     }

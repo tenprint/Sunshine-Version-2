@@ -110,7 +110,8 @@
             <com.example.android.sunshine.app.CustomCompassView
                 android:id="@+id/detail_wind_compass"
                 android:layout_width="100dp"
-                android:layout_height="100dp" />
+                android:layout_height="100dp"
+                android:contentDescription="@string/CustomCompassView"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
