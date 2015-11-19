@@ -97,11 +97,16 @@ public class CustomCompassView extends View {
     }
 
 
+
     protected void initialize(float direction){
         mDirection = direction;
         Log.d("MyView", Float.toString(direction));
 
-//        // Udacity code that I need to research further
+        // Accessibility -- the easy way
+        this.setContentDescription("Compass direction " + direction + "degrees");
+
+
+//        // Accessibility -- the better way (according to Udacity)
 //        AccessibilityManager accessibilityManager =
 //                (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
 //        if (accessibilityManager.isEnabled()) {
@@ -109,10 +114,15 @@ public class CustomCompassView extends View {
 //                    AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED);
 //        }
 
-        // Accessibility
-        this.setContentDescription("Compass direction " + direction + "degrees");
 
         invalidate();
         requestLayout();
     }
+
+//    @Override
+//    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+//        event.getText().add(Float.toString(mDirection));
+//        return super.dispatchPopulateAccessibilityEvent(event);
+//    }
+
 }
