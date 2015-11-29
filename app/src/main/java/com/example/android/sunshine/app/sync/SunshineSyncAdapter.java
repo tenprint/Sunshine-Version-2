@@ -459,9 +459,9 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         String lastNotificationKey = context.getString(R.string.pref_last_notification);
         long lastSync = prefs.getLong(lastNotificationKey, 0);
 
-        if (true  /*   System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS */) {
-
+        if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
             Log.d(LOG_TAG, "if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) TRUE");
+            
             // Last sync was more than 1 day ago, let's send a notification with the weather.
             String locationQuery = Utility.getPreferredLocation(context);
 
