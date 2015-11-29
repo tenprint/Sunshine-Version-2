@@ -38,14 +38,16 @@ public class Utility {
                 .equals(context.getString(R.string.pref_units_metric));
     }
 
-    static String formatTemperature(Context context, double temperature, boolean isMetric) {
-        double temp;
-        if ( !isMetric ) {
-            temp = 9*temperature/5+32;
-        } else {
-            temp = temperature;
+    public static String formatTemperature(Context context, double temperature) {
+        // Data stored in Celsius by default.  If user prefers to see in Fahrenheit, convert
+        // the values here.
+        String suffix = "\u00B0";
+        if (!isMetric(context)) {
+            temperature = (temperature * 1.8) + 32;
         }
-        return context.getString(R.string.format_temperature, temp);
+
+        // For presentation, assume the user doesn't care about tenths of a degree.
+        return String.format(context.getString(R.string.format_temperature), temperature);
     }
 
     static String formatDate(long dateInMilliseconds) {
@@ -210,35 +212,6 @@ public class Utility {
         return -1;
     }
 
-    public static String getContentDescription(int weatherId){
-
-        if (weatherId >= 200 && weatherId <= 232) {
-            return "storm";
-        } else if (weatherId >= 300 && weatherId <= 321) {
-            return "light rain";
-        } else if (weatherId >= 500 && weatherId <= 504) {
-            return "rain";
-        } else if (weatherId == 511) {
-            return "snow";
-        } else if (weatherId >= 520 && weatherId <= 531) {
-            return "rain";
-        } else if (weatherId >= 600 && weatherId <= 622) {
-            return "snow";
-        } else if (weatherId >= 701 && weatherId <= 761) {
-            return "fog";
-        } else if (weatherId == 761 || weatherId == 781) {
-            return "storm";
-        } else if (weatherId == 800) {
-            return "clear";
-        } else if (weatherId == 801) {
-            return "light clouds";
-        } else if (weatherId >= 802 && weatherId <= 804) {
-            return "cloudy";
-        }
-
-        return "Weather";
-    }
-
     /**
      * Helper method to provide the art resource id according to the weather condition id returned
      * by the OpenWeatherMap call.
@@ -272,5 +245,34 @@ public class Utility {
             return R.drawable.art_clouds;
         }
         return -1;
+    }
+
+    public static String getContentDescription(int weatherId){
+
+        if (weatherId >= 200 && weatherId <= 232) {
+            return "storm";
+        } else if (weatherId >= 300 && weatherId <= 321) {
+            return "light rain";
+        } else if (weatherId >= 500 && weatherId <= 504) {
+            return "rain";
+        } else if (weatherId == 511) {
+            return "snow";
+        } else if (weatherId >= 520 && weatherId <= 531) {
+            return "rain";
+        } else if (weatherId >= 600 && weatherId <= 622) {
+            return "snow";
+        } else if (weatherId >= 701 && weatherId <= 761) {
+            return "fog";
+        } else if (weatherId == 761 || weatherId == 781) {
+            return "storm";
+        } else if (weatherId == 800) {
+            return "clear";
+        } else if (weatherId == 801) {
+            return "light clouds";
+        } else if (weatherId >= 802 && weatherId <= 804) {
+            return "cloudy";
+        }
+
+        return "Weather";
     }
 }
