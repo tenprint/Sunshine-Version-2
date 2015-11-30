@@ -76,7 +76,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
   @Override
       public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-      Log.d(LOG_TAG, "onPerformSync Called.");
+      Log.d(LOG_TAG, "onPerformSync()");
 
       //SharedPreferences sharedPreferences = getContext().getSharedPreferences()
       String locationQuery = Utility.getPreferredLocation(getContext());
@@ -178,6 +178,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
       private void getWeatherDataFromJson(String forecastJsonStr, String locationSetting)
       throws JSONException {
+            Log.d(LOG_TAG,"getWeatherDataFromJson()");
+          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
 
           // Now we have a String representing the complete forecast in JSON Format.
@@ -222,6 +224,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
               JSONObject cityCoord = cityJson.getJSONObject(OWM_COORD);
               double cityLatitude = cityCoord.getDouble(OWM_LATITUDE);
               double cityLongitude = cityCoord.getDouble(OWM_LONGITUDE);
+              Log.d(LOG_TAG, "cityLatitude, cityLongitude = " + cityLatitude + "," + cityLongitude);
+
+              SharedPreferences.Editor spEditor = prefs.edit();
+              spEditor.putString(WeatherContract.LocationEntry.COLUMN_COORD_LAT, Double.toString(cityLatitude)).apply();
+              spEditor.putString(WeatherContract.LocationEntry.COLUMN_COORD_LONG, Double.toString(cityLongitude)).apply();
+
+
 
               long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
 
@@ -252,10 +261,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                   int humidity;
                   double windSpeed;
                   double windDirection;
-
                   double high;
                   double low;
-
                   String description;
                   int weatherId;
 
@@ -307,7 +314,29 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                   inserted = mContext.getContentResolver().bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, cvArray);
               }
 
-              notifyWeather();
+              // Remove day-old data from database
+              // My code:
+//              Calendar yesterday = Calendar.getInstance();
+//              yesterday.add(Calendar.DAY_OF_MONTH, -1);
+//              Log.d(LOG_TAG, "Calendar = " + String.format("%tF", yesterday));
+
+              int deleted = 0;
+
+              // Udacity's code
+              deleted = mContext.getContentResolver().delete(WeatherContract.WeatherEntry.CONTENT_URI,
+                      WeatherContract.WeatherEntry.COLUMN_DATE + " < ?", new String[]{
+                              Long.toString(dayTime.setJulianDay(julianStartDay-1))
+                      });
+
+              Log.d(LOG_TAG, "deleted = " + deleted);  // Running this the first time, Udacity's code deleted 48 entries while mine deleted 0. I did something wrong.
+
+              // If notifications are On, trigger notification
+              Boolean notificationsOn = prefs.getBoolean(getContext().getString(R.string.pref_notifications_key), true);
+              Log.d(LOG_TAG, "notificationsOn = " + notificationsOn);
+
+              if(notificationsOn == true) {
+                  notifyWeather();
+              }
 
               Log.d(LOG_TAG, "getWeatherDataFromJson Complete. " + inserted + " Inserted");
 
@@ -365,6 +394,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
    * @param context The context used to access the account service
    */
   public static void syncImmediately(Context context) {
+      Log.d("SunshineSyncAdapter", "syncImmediately()");
     Bundle bundle = new Bundle();
     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
     bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -461,7 +491,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
         if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
             Log.d(LOG_TAG, "if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) TRUE");
-            
+
             // Last sync was more than 1 day ago, let's send a notification with the weather.
             String locationQuery = Utility.getPreferredLocation(context);
 
@@ -495,7 +525,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 Intent resultIntent = new Intent(mContext, DetailActivity.class);
                 resultIntent.setData(weatherUri);
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
                 stackBuilder.addParentStack(DetailActivity.class);
                 stackBuilder.addNextIntent(resultIntent);
                 PendingIntent resultPendingIntent =

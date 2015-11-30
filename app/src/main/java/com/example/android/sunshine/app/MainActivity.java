@@ -16,13 +16,16 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
@@ -95,12 +98,24 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
     private void openPreferredLocationInMap() {
         String location = Utility.getPreferredLocation(this);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String latitude = prefs.getString(WeatherContract.LocationEntry.COLUMN_COORD_LAT, "0");
+        String longitude = prefs.getString(WeatherContract.LocationEntry.COLUMN_COORD_LONG, "0");
+
+        Log.d(LOG_TAG, "SharedPrefs lat, long = " + latitude + "," + longitude);
+
+
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
-        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
-                .appendQueryParameter("q", location)
-                .build();
+
+        // Old version that uses zip code
+//        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+//                .appendQueryParameter("q", location)
+//                .build();
+
+        Uri geoLocation = Uri.parse("geo:" + latitude+","+longitude);
+        Log.d(LOG_TAG, "geoLocation = " + geoLocation.toString());
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);

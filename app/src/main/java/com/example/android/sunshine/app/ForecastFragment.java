@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -181,6 +182,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
+        Log.d(LOG_TAG, "updateWeather()");
         //String location = Utility.getPreferredLocation(getActivity());
         //new FetchWeatherTask(getActivity()).execute(location);
         SunshineSyncAdapter.syncImmediately(getActivity());

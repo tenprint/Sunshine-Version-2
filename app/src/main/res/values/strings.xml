@@ -50,6 +50,9 @@
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_units_imperial" translatable="false">imperial</string>
 
+    <!-- Key name for storing Notifications On/Off in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_notifications_key" translatable="false">notifications</string>
+
 
     <!-- Language-specific constants -->
     <string name="today">Today</string>
