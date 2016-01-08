@@ -78,9 +78,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
       public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
       Log.d(LOG_TAG, "onPerformSync()");
 
-      //SharedPreferences sharedPreferences = getContext().getSharedPreferences()
       String locationQuery = Utility.getPreferredLocation(getContext());
-
 
       // These two need to be declared outside the try/catch
       // so that they can be closed in the finally block.
